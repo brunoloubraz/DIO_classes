@@ -38,7 +38,8 @@ options ="""
   [4] - Criar usuário
   [5] - Criar conta corrente
   [6] - Listar usuários
-  [7] - Sair
+  [7] - Listar contas
+  [8] - Sair
       
 =====================================================
 """
@@ -70,7 +71,7 @@ def deposito():
     print(enter_deposit_text)
     valor_depositado = float(input("Digite ao lado o valor que deseja depositar na sua conta:"))
     saldo += valor_depositado
-    alteracoes_conta[f"{time()} - depósito"] = valor_depositado
+    alteracoes_conta[f"{time()} - depósito"] = f" R$ {valor_depositado}"
     print(f"Seu saldo agora é de {saldo:.2f}")
 def saque():
   global max_saques, saldo, alteracoes_conta
@@ -87,7 +88,7 @@ def saque():
       print("Saldo insuficiente")
   else:
       saldo -= valor_sacado
-      alteracoes_conta[f"{time()} - Saque"] = valor_sacado
+      alteracoes_conta[f"{time()} - Saque"] = f"R$ {valor_sacado}"
       max_saques -= 1
       print("Transação realizada com sucesso!")
       print(f"\nSeu saldo atual é de R${saldo:.2f}")
@@ -129,19 +130,21 @@ def listar_usuarios():
    global usuarios
    for usuario in usuarios:
       print(usuario)
-
 def criar_conta_corrente():
   global usuarios, conta
   agencia = "0001"
   user = {}
+  user_found = False
   listar_usuarios()
   user_cpf = input("Digite ao lado o cpf cadastrado no sistema que deseja utilizar: ")
   for usuario in usuarios:
      if user_cpf in usuario:
-        user = usuario
-     else:
-        print("Usuário não encontrado, realizar cadastro do mesmo")
+        user = usuario.copy()
+        user_found = True
+  if not user_found:
+        print("Usuário não encontrado, realizar cadastro do mesmo no sistema")
         return
+  
   acc_bancaria = {
      "conta": conta,
      "agencia": agencia,
@@ -150,12 +153,15 @@ def criar_conta_corrente():
   contas.append(acc_bancaria)
   conta += 1
   print(contas)
+def listar_contas():
+  for conta in contas:
+     print(conta)
 
 while True:
   choise = int(input(options))
 
-  if choise <= 0 or choise > 7: 
-    print("Selecione uma das opções entre 1 e 7")
+  if choise <= 0 or choise > 8: 
+    print("Selecione uma das opções entre 1 e 8")
 
   elif choise == 1: # DEPOSITO
     deposito()
@@ -169,7 +175,9 @@ while True:
      criar_conta_corrente()
   elif choise == 6: #Criar conta corrente
      listar_usuarios()
-  elif choise == 7: # SAIR
+  elif choise == 7: # listar contas
+    listar_contas()
+  elif choise == 8: # SAIR
     print(exit)
     break
 
